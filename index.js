@@ -313,6 +313,14 @@ bot.action('NO_REFERRAL', async (ctx) => {
         inline_keyboard: buttons
       }
     });
+    // Add a reply keyboard as an experiment
+    await ctx.reply('Or tap this keyboard button to send @sonic_reddragon_bot:', {
+      reply_markup: {
+        keyboard: [[{ text: '@sonic_reddragon_bot' }]],
+        resize_keyboard: true,
+        one_time_keyboard: true
+      }
+    });
   } catch (err) {
     console.error('Error sending group links:', err);
   }
