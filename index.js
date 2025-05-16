@@ -252,6 +252,29 @@ bot.command('testbuy', async (ctx) => {
 // Handle text messages for referral code entry
 global.lastReferralCode = {};
 bot.on('text', async (ctx, next) => {
+  // Only listen in groups, not in private chats (onboarding handled elsewhere)
+  if (ctx.chat && (ctx.chat.type === 'group' || ctx.chat.type === 'supergroup')) {
+    const PHRASES = [
+      'If Red Dragon has million number of fans i am one of them 🙋🏻',
+      'if Red Dragon has ten fans i am one of them 🙋🏻🙋🏻',
+      'if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾',
+      'if Red Dragonhas no fans, that means i am no more on the earth 😢',
+      'if world against Red Dragon, i am against the world ❌🌍☄️',
+      'i love #RedDragon until my last breath.. 😍',
+      'Die Hard fan of Red Dragon🤓🌹',
+      'Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠'
+    ];
+    // Normalize function: lowercase, trim, single spaces
+    const normalize = s => s.replace(/\s+/g, ' ').toLowerCase().trim();
+    const msgNorm = normalize(ctx.message.text);
+    for (const phrase of PHRASES) {
+      if (msgNorm === normalize(phrase)) {
+        await ctx.reply('✅ Red Dragon phrase detected!');
+        break;
+      }
+    }
+  }
+  // Continue onboarding logic for DMs
   const userId = ctx.from.id;
   const state = onboardingState.get(userId);
   if (state && state.awaitingReferral) {
