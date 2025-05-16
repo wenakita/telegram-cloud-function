@@ -372,9 +372,8 @@ bot.on('inline_query', async (ctx) => {
   const results = PHRASES.map((phrase, idx) => ({
     type: 'article',
     id: `dragon_phrase_${idx}`,
-    title: phrase,
-    input_message_content: { message_text: phrase },
-    description: 'Send this to show your Red Dragon spirit!'
+    title: `Red Dragon Message ${idx + 1}`,
+    input_message_content: { message_text: phrase }
   }));
   return ctx.answerInlineQuery(results, { cache_time: 0 });
 });
