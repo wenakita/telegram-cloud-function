@@ -63,6 +63,15 @@ bot.on('new_chat_members', async (ctx) => {
     for (const member of ctx.message.new_chat_members) {
       await ctx.telegram.sendVideo(chatId, { source: videoPath }, {
         caption: formatWelcomeCaption(member),
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "📖 Docs", url: "https://docs.sonicreddragon.io" },
+              { text: "📊 Chart", url: "https://dexscreener.com/sonic/0x3BBbefa032717688D9b1F256C5A6498541158428" },
+              { text: "🌐 Website", url: "https://sonicreddragon.io" }
+            ]
+          ]
+        }
       });
     }
   } catch (err) {
@@ -132,7 +141,19 @@ async function notifyBuyOnChain(buyData) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     const videoPath = path.resolve(__dirname, 'assets/videos/Buy.mp4');
     const caption = formatBuyCaption(buyData);
-    await bot.telegram.sendVideo(chatId, { source: videoPath }, { caption, parse_mode: 'HTML' });
+    await bot.telegram.sendVideo(chatId, { source: videoPath }, {
+      caption,
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "📖 Docs", url: "https://docs.sonicreddragon.io" },
+            { text: "📊 Chart", url: "https://dexscreener.com/sonic/0x3BBbefa032717688D9b1F256C5A6498541158428" },
+            { text: "🌐 Website", url: "https://sonicreddragon.io" }
+          ]
+        ]
+      }
+    });
   } catch (err) {
     console.error('Failed to send buy video:', err);
   }
