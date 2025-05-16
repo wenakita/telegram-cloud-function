@@ -199,11 +199,6 @@ bot.start(async (ctx) => {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "📖 Docs", url: "https://docs.sonicreddragon.io" },
-            { text: "📊 Chart", url: "https://dexscreener.com/sonic/0x3BBbefa032717688D9b1F256C5A6498541158428" },
-            { text: "🌐 Website", url: "https://sonicreddragon.io" }
-          ],
-          [
             { text: "Show Partner Groups", callback_data: "NO_REFERRAL" }
           ]
         ]
