@@ -350,24 +350,6 @@ bot.catch((err, ctx) => {
   console.error('[Bot] Error:', err);
 });
 
-
-app.use(express.json());
-
-app.post('/webhook', async (req, res) => {
-  try {
-    await bot.handleUpdate(req.body);
-    res.status(200).send('OK');
-  } catch (err) {
-    console.error('[Webhook] Error:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.use((err, req, res, next) => {
-  console.error('[Express] Error:', err);
-  res.status(500).send('Internal Server Error');
-});
-
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
