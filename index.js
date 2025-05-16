@@ -302,23 +302,15 @@ bot.action('NO_REFERRAL', async (ctx) => {
     const msg =
       '🔗 Join any of these groups below and request a referral code by messaging an admin.\n' +
       '\n' +
-      'Or, click the button below to use the @sonic_reddragon_bot inline feature: Instantly open your message box with Red Dragon messages ready to send!';
+      'Or use the button below to instantly open the Red Dragon inline bot in any chat!';
     // Add the inline button row
     buttons.push([
       { text: "✨ Try Red Dragon Inline!", switch_inline_query: "" }
     ]);
-    await ctx.reply(msg, {
+    await ctx.reply(msg + '\n\n💡 Tip: In any chat, type <code>@sonic_reddragon_bot</code> to use the inline bot.', {
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: buttons
-      }
-    });
-    // Add a reply keyboard as an experiment
-    await ctx.reply('Or tap this keyboard button to send @sonic_reddragon_bot:', {
-      reply_markup: {
-        keyboard: [[{ text: '@sonic_reddragon_bot' }]],
-        resize_keyboard: true,
-        one_time_keyboard: true
       }
     });
   } catch (err) {
