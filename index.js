@@ -382,20 +382,6 @@ bot.on('inline_query', async (ctx) => {
     'Die Hard fan of Red Dragon🤓🌹',
     'Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠'
   ];
-  const query = ctx.inlineQuery.query.trim();
-  if (query === '' || query === '@sonic_reddragon_bot') {
-    return ctx.answerInlineQuery([
-      {
-        type: 'article',
-        id: 'referral_code',
-        title: 'Official Red Dragon Referral Message',
-        description: 'Paste this message to request access to the main group',
-        input_message_content: {
-          message_text: REFERRAL_REQUEST_TEXT
-        }
-      }
-    ], { cache_time: 0 });
-  }
   const results = PHRASES.map((phrase, idx) => ({
     type: 'article',
     id: `dragon_phrase_${idx}`,
