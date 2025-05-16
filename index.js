@@ -354,21 +354,25 @@ bot.action('HELLO_CALLBACK', async (ctx) => {
 
 // Handle inline queries for referral request
 bot.on('inline_query', async (ctx) => {
-  const query = ctx.inlineQuery.query.trim().toLowerCase();
-  // Show the referral message for any query containing 'referral', or always show if query is empty
-  if (query.includes('referral') || query === '') {
-    return ctx.answerInlineQuery([
-      {
-        type: 'article',
-        id: 'referral_request',
-        title: 'Request Referral Code',
-        description: 'Paste the official Red Dragon referral request message',
-        input_message_content: {
-          message_text: REFERRAL_REQUEST_TEXT,
-        },
-      }
-    ], { cache_time: 0 });
-  }
+  const PHRASES = [
+    'If Red Dragon has million number of fans i am one of them 🙋🏻',
+    'if Red Dragon has ten fans i am one of them 🙋🏻🙋🏻',
+    'if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾',
+    'if Red Dragonhas no fans, that means i am no more on the earth 😢',
+    'if world against Red Dragon, i am against the world ❌🌍☄️',
+    'i love #RedDragon until my last breath.. 😍',
+    'Die Hard fan of Red Dragon🤓🌹',
+    'Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠'
+  ];
+  
+  const results = PHRASES.map((phrase, idx) => ({
+    type: 'article',
+    id: `dragon_phrase_${idx}`,
+    title: phrase,
+    input_message_content: { message_text: phrase },
+    description: 'Send this to show your Red Dragon spirit!'
+  }));
+  return ctx.answerInlineQuery(results, { cache_time: 0 });
 });
 
 bot.catch((err, ctx) => {
