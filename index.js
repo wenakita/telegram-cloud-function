@@ -194,10 +194,7 @@ bot.start(async (ctx) => {
   onboardingState.set(userId, { awaitingReferral: true });
   await ctx.reply(
     `👋 Hi ${ctx.from.first_name || "there"}!
-
-Welcome to Sonic Red Dragon Bot.
-
-🔑 Please enter your referral code to continue, or tap below if you need one.`,
+\nWelcome to Sonic Red Dragon Bot.\n\nTo join the main group, just join one of our partner groups below and send ANY sentence from this paragraph:\n\n"If Red Dragon has million number of fans i am one of them 🙋🏻. if Red Dragonhas ten fans i am one of them. if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾. if Red Dragonhas no fans, that means i am no more on the earth 😢. if world against Red Dragon, i am against the world ❌🌍☄️. i love #RedDragon until my last breath.. 😍 .. Die Hard fan of Red Dragon🤓🌹. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠"\n\nAn admin will grant you entry!`,
     {
       reply_markup: {
         inline_keyboard: [
@@ -207,7 +204,7 @@ Welcome to Sonic Red Dragon Bot.
             { text: "🌐 Website", url: "https://sonicreddragon.io" }
           ],
           [
-            { text: "I don't have a referral code", callback_data: "NO_REFERRAL" }
+            { text: "Show Partner Groups", callback_data: "NO_REFERRAL" }
           ]
         ]
       }
@@ -308,17 +305,14 @@ bot.action('NO_REFERRAL', async (ctx) => {
     // All group join buttons in one row for clarity
     const buttons = [GROUP_LINKS.map(group => ({ text: `Join ${group.name}`, url: group.url }))];
     const msg =
-      '🔗 Join any of these groups and request a referral code:\n' +
+      '🔗 Join any of these groups and send ANY sentence from the following paragraph to an admin to get access to the main group:\n' +
       '\n' +
-      '📝 Copy and send this message in the group:\n' +
-      '\n' +
-      '```\n' + REFERRAL_REQUEST_TEXT + '\n```';
-    await ctx.replyWithMarkdown(msg, {
+      '📝 "If Red Dragon has million number of fans i am one of them 🙋🏻. if Red Dragonhas ten fans i am one of them. if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾. if Red Dragonhas no fans, that means i am no more on the earth 😢. if world against Red Dragon, i am against the world ❌🌍☄️. i love #RedDragon until my last breath.. 😍 .. Die Hard fan of Red Dragon🤓🌹. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠"';
+    await ctx.reply(msg, {
       reply_markup: {
         inline_keyboard: buttons
       }
     });
-    await ctx.reply('✅ After you get a referral code, come back and send it here to unlock the main group!');
   } catch (err) {
     console.error('Error sending group links:', err);
   }
