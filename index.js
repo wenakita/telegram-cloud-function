@@ -81,17 +81,26 @@ bot.on('new_chat_members', async (ctx) => {
 
 // --- Helper to format a fun, engaging buy message ---
 function formatBuyCaption(buy) {
-  // buy = { amountEth, amountUsd, tokens, buyer, buyerUrl, txUrl, chartUrl, tradeUrl, marketCap, ... }
+  // buy = { amountEth, amountUsd, tokens, buyer, buyerUrl, txUrl, chartUrl, tradeUrl, marketCap, walletValue, position, dextoolsUrl, screenerUrl, buyUrl, trendingUrl, coin, botName, botUrl }
+  const coin = buy.coin || 'DRAGON';
+  const botName = buy.botName || 'Sonic Red Dragon';
+  const botUrl = buy.botUrl || 'https://t.me/sonic_reddragon_bot';
+  const whale = '🐋';
+  const greenBar = '🟢'.repeat(64);
   return (
-    `🔥🐲 SONIC DRAGON BUY ALERT! 🐲🔥\n\n` +
-    `💰 <b>${buy.amountEth || '?'} ETH</b> (<b>$${buy.amountUsd || '?'} USD</b>)\n` +
-    `🪙 <b>${buy.tokens || '?'} DRAGON</b>\n` +
-    `👤 <a href="${buy.buyerUrl || '#'}">${buy.buyer || 'Unknown'}</a>\n` +
-    (buy.txUrl ? `🔗 <a href="${buy.txUrl}">Txn</a> ` : '') +
-    (buy.chartUrl ? `📊 <a href="${buy.chartUrl}">Chart</a> ` : '') +
-    (buy.tradeUrl ? `🦄 <a href="${buy.tradeUrl}">Trade</a>\n` : '\n') +
-    (buy.marketCap ? `💹 <b>Market Cap:</b> $${buy.marketCap}\n` : '') +
-    `\n🔥 Welcome to the Dragon Horde! #DragonBuy #SonicRedDragon 🔥🐉`
+    `${whale} <a href="${botUrl}">${botName}</a> Whale Buy! ${whale}\n` +
+    `${greenBar}\n\n` +
+    `🔀 Spent <b>$${buy.amountUsd || '?'}</b> (<b>${buy.amountEth || '?' } ETH</b>)\n` +
+    `🔀 Got <b>${buy.tokens || '?'} ${coin}</b>\n` +
+    `👤 <a href="${buy.buyerUrl || '#'}">Buyer</a> / <a href="${buy.txUrl || '#'}">TX</a>\n` +
+    (buy.walletValue ? `💎 Wallet Value <b>$${buy.walletValue}</b>\n` : '') +
+    (buy.position ? `🪙 Position <b>${buy.position}</b>\n` : '') +
+    (buy.marketCap ? `💸 Market Cap <b>$${buy.marketCap}</b>\n` : '') +
+    '\n' +
+    `<a href="${buy.dextoolsUrl || 'https://www.dextools.io/'}">DexT</a> | ` +
+    `<a href="${buy.screenerUrl || 'https://dexscreener.com/'}">Screener</a> | ` +
+    `<a href="${buy.buyUrl || 'https://sonicswap.io/swap?outputCurrency=0x3BBbefa032717688D9b1F256C5A6498541158428'}">Buy</a> | ` +
+    `<a href="${buy.trendingUrl || 'https://t.me/Trending'}">Trending</a>`
   );
 }
 
