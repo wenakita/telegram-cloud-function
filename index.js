@@ -312,6 +312,10 @@ bot.action('NO_REFERRAL', async (ctx) => {
       '6. i love #RedDragon until my last breath.. 😍 \n' +
       '7. Die Hard fan of Red Dragon🤓🌹\n' +
       '8. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠';
+    // Add the inline button row
+    buttons.push([
+      { text: "✨ Try Red Dragon Inline!", switch_inline_query: "" }
+    ]);
     await ctx.reply(msg, {
       parse_mode: 'HTML',
       reply_markup: {
