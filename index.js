@@ -20,7 +20,7 @@ if (!TELEGRAM_BOT_TOKEN) {
 const bot = new Telegraf(TELEGRAM_BOT_TOKEN);
 
 // --- Cloud Run/Express webhook setup ---
-const app = express();
+
 app.use(express.json());
 
 // Health check endpoint
@@ -354,7 +354,7 @@ bot.catch((err, ctx) => {
   console.error('[Bot] Error:', err);
 });
 
-const app = express();
+
 app.use(express.json());
 
 app.post('/webhook', async (req, res) => {
