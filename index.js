@@ -2,6 +2,7 @@
 const express = require('express');
 const { Telegraf, Markup } = require('telegraf');
 const path = require('path');
+const app = express();
 
 // Global error handlers for diagnostics
 process.on('unhandledRejection', (reason, promise) => {
