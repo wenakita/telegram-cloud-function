@@ -43,11 +43,6 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error');
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
-
 exports.telegramWebhook = app;
 
 // --- Helper to format a fun, dragon-themed welcome message ---
