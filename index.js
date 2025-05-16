@@ -330,7 +330,11 @@ bot.action('NO_REFERRAL', async (ctx) => {
     buttons.push([
       { text: "✨ Try Red Dragon Inline!", switch_inline_query: "" }
     ]);
-    await ctx.reply(msg + '\n\n💡 Tip: In any chat, type <code>@sonic_reddragon_bot</code> to use the inline bot.', {
+    // Add the mention link button row
+    buttons.push([
+      { text: "Type @sonic_reddragon_bot", url: "https://t.me/sonic_reddragon_bot" }
+    ]);
+    await ctx.reply(msg, {
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: buttons
