@@ -194,12 +194,12 @@ bot.start(async (ctx) => {
   onboardingState.set(userId, { awaitingReferral: true });
   await ctx.reply(
     `👋 Hi ${ctx.from.first_name || "there"}!
-\nWelcome to Sonic Red Dragon Bot.\n\nTo join the main group, just join one of our partner groups below and send ANY sentence from this paragraph:\n\n"If Red Dragon has million number of fans i am one of them 🙋🏻. if Red Dragonhas ten fans i am one of them. if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾. if Red Dragonhas no fans, that means i am no more on the earth 😢. if world against Red Dragon, i am against the world ❌🌍☄️. i love #RedDragon until my last breath.. 😍 .. Die Hard fan of Red Dragon🤓🌹. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠"\n\nAn admin will grant you entry!`,
+\nWelcome to Sonic Red Dragon Bot.\n\n🔑 Please enter your referral code to continue.\n\nIf you don't have a referral code, tap the button below!`,
     {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "Show Partner Groups", callback_data: "NO_REFERRAL" }
+            { text: "I don't have a referral code", callback_data: "NO_REFERRAL" }
           ]
         ]
       }
@@ -300,10 +300,20 @@ bot.action('NO_REFERRAL', async (ctx) => {
     // All group join buttons in one row for clarity
     const buttons = [GROUP_LINKS.map(group => ({ text: `Join ${group.name}`, url: group.url }))];
     const msg =
-      '🔗 Join any of these groups and send ANY sentence from the following paragraph to an admin to get access to the main group:\n' +
+      '🔗 Join any of these groups below and request a referral code by messaging an admin.\n' +
       '\n' +
-      '📝 "If Red Dragon has million number of fans i am one of them 🙋🏻. if Red Dragonhas ten fans i am one of them. if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾. if Red Dragonhas no fans, that means i am no more on the earth 😢. if world against Red Dragon, i am against the world ❌🌍☄️. i love #RedDragon until my last breath.. 😍 .. Die Hard fan of Red Dragon🤓🌹. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠"';
+      'Or, use the @sonic_reddragon_bot inline feature: In ANY Telegram chat, type <code>@sonic_reddragon_bot</code> and you can select one of these phrases to send:\n' +
+      '\n' +
+      '1. If Red Dragon has million number of fans i am one of them 🙋🏻\n' +
+      '2. if Red Dragon has ten fans i am one of them 🙋🏻🙋🏻\n' +
+      '3. if Red Dragonhave only one fan and that is me 🙋🏼🙋🏽🙋🏾\n' +
+      '4. if Red Dragonhas no fans, that means i am no more on the earth 😢\n' +
+      '5. if world against Red Dragon, i am against the world ❌🌍☄️\n' +
+      '6. i love #RedDragon until my last breath.. 😍 \n' +
+      '7. Die Hard fan of Red Dragon🤓🌹\n' +
+      '8. Hit Like If you Think Red Dragon is Best player & Smart In the world 🤠';
     await ctx.reply(msg, {
+      parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: buttons
       }
