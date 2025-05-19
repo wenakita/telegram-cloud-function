@@ -8,11 +8,15 @@
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^6.0.1",
+    "axios": "^1.9.0",
     "body-parser": "^1.20.2",
     "cross-spawn": "^7.0.5",
     "csv-parse": "^5.6.0",
-    "express": "^4.19.2",
+    "dotenv": "^16.5.0",
+    "ethers": "^6.14.1",
+    "express": "^4.21.2",
     "firebase-admin": "^13.4.0",
+    "form-data": "^4.0.2",
     "telegraf": "^4.16.2"
   }
 }

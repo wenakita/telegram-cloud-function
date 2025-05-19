@@ -1,4 +1,7 @@
 // Minimal Telegram bot for Cloud Run using Telegraf
+// IMPORTANT: Do NOT import or require './sonic-buy-listener.js' or './buy_webhook_server.js' here.
+// These must run as SEPARATE processes, not as part of this webhook handler.
+// Only export the Express app for Google Cloud Functions.
 const express = require('express');
 const { Telegraf, Markup } = require('telegraf');
 const path = require('path');
@@ -402,11 +405,6 @@ bot.on('inline_query', async (ctx) => {
 
 bot.catch((err, ctx) => {
   console.error('[Bot] Error:', err);
-});
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
 });
 
 exports.telegramWebhook = app;
