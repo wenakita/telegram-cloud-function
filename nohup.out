@@ -1,0 +1,56 @@
+BOT TOKEN: 8178944159:AAFfad3sH_i-vsAeJ3I61rgWMGcGh7dNvDU
+CHAT ID: -1002567611285
+Sent: "Forge Your Fortune on the Blockchain" with image assets/images/dragon6.png | ⏳ Event in 6h 45m 37s
+BOT TOKEN: 8178944159:AAFfad3sH_i-vsAeJ3I61rgWMGcGh7dNvDU
+CHAT ID: -1002567611285
+BOT TOKEN: 8178944159:AAFfad3sH_i-vsAeJ3I61rgWMGcGh7dNvDU
+CHAT ID: -1002567611285
+Sent: "Enter the Dragon’s Crypto Realm" with image assets/images/dragon2.png | ⏳ Time remaining: 3h 6m 30s
+Sent: "Jackpots Reborn on the Blockchain" with image assets/images/dragon4.png | ⏳ Time remaining: 3h 3m 24s
+Sent: "Where Luck Roars on the Blockchain" with image assets/images/dragon3.png | ⏳ Event in 5h 38m 1s
+node:internal/fs/promises:1169
+  return await PromisePrototypeThen(
+         ^
+
+Error: ENOENT: no such file or directory, realpath 'assets/images/dragon2.mp4'
+    at async realpath (node:internal/fs/promises:1169:10)
+    at async attachFormMedia (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:208:28)
+    at async attachFormValue (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:190:12)
+    at async Promise.all (index 2)
+    at async buildFormDataConfig (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:115:5)
+    at async Telegram.callApi (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:297:15)
+    at async sendTeaser (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/timed_teaser.js:45:5)
+    at async runTeaserTimer (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/timed_teaser.js:78:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'realpath',
+  path: 'assets/images/dragon2.mp4'
+}
+
+Node.js v22.14.0
+node:internal/fs/promises:1169
+  return await PromisePrototypeThen(
+         ^
+
+Error: ENOENT: no such file or directory, realpath 'assets/images/dragon3.mp4'
+    at async realpath (node:internal/fs/promises:1169:10)
+    at async attachFormMedia (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:208:28)
+    at async attachFormValue (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:190:12)
+    at async Promise.all (index 2)
+    at async buildFormDataConfig (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:115:5)
+    at async Telegram.callApi (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/node_modules/telegraf/lib/core/network/client.js:297:15)
+    at async sendTeaser (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/timed_teaser.js:45:5)
+    at async runTeaserTimer (/home/reddragon/SonicRedDragon/integrations/telegram-cloud-function/timed_teaser.js:78:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'realpath',
+  path: 'assets/images/dragon3.mp4'
+}
+
+Node.js v22.14.0
+Sent: "Dragon-Fueled Crypto Jackpots" with image assets/images/dragon3.png | ⏳ Event in 3h 45m 20s
+Sent: "Where Crypto Fortune Takes Flight" with image assets/images/dragon5.png | ⏳ Event in 1h 52m 40s
+Sent: "Unleash the Dragon. Unlock Jackpots." with image assets/images/dragon5.png | ⏳ Event in 0h 45m 4s
+Sent: "Dragon-Fueled Crypto Jackpots" with image assets/images/dragon7.png | ⏳ Event in 0h 0m 9s
+Sent: "Elegance in Chance, Powered by Crypto" with image assets/images/dragon3.png | ⏳ Event in 0h 0m 0s
+All teasers sent.

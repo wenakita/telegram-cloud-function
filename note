@@ -1,0 +1,214 @@
+Calling send
+Since the send logic has already been defined, we'll instead view how the function should be called.
+
+Hardhat Task
+Foundry Script
+import {task} from 'hardhat/config';
+import {getNetworkNameForEid, types} from '@layerzerolabs/devtools-evm-hardhat';
+import {EndpointId} from '@layerzerolabs/lz-definitions';
+import {addressToBytes32} from '@layerzerolabs/lz-v2-utilities';
+import {Options} from '@layerzerolabs/lz-v2-utilities';
+import {BigNumberish, BytesLike} from 'ethers';
+
+interface Args {
+  amount: string;
+  to: string;
+  toEid: EndpointId;
+}
+
+interface SendParam {
+  dstEid: EndpointId; // Destination endpoint ID, represented as a number.
+  to: BytesLike; // Recipient address, represented as bytes.
+  amountLD: BigNumberish; // Amount to send in local decimals.
+  minAmountLD: BigNumberish; // Minimum amount to send in local decimals.
+  extraOptions: BytesLike; // Additional options supplied by the caller to be used in the LayerZero message.
+  composeMsg: BytesLike; // The composed message for the send() operation.
+  oftCmd: BytesLike; // The OFT command to be executed, unused in default OFT implementations.
+}
+
+// send tokens from a contract on one network to another
+task('lz:oft:send', 'Sends tokens from either OFT or OFTAdapter')
+  .addParam('to', 'contract address on network B', undefined, types.string)
+  .addParam('toEid', 'destination endpoint ID', undefined, types.eid)
+  .addParam('amount', 'amount to transfer in token decimals', undefined, types.string)
+  .setAction(async (taskArgs: Args, {ethers, deployments}) => {
+    const toAddress = taskArgs.to;
+    const eidB = taskArgs.toEid;
+
+    // Get the contract factories
+    const oftDeployment = await deployments.get('MyOFT');
+
+    const [signer] = await ethers.getSigners();
+
+    // Create contract instances
+    const oftContract = new ethers.Contract(oftDeployment.address, oftDeployment.abi, signer);
+
+    const decimals = await oftContract.decimals();
+    const amount = ethers.utils.parseUnits(taskArgs.amount, decimals);
+    let options = Options.newOptions().addExecutorLzReceiveOption(65000, 0).toBytes();
+
+    // Now you can interact with the correct contract
+    const oft = oftContract;
+
+    const sendParam: SendParam = {
+      dstEid: eidB,
+      to: addressToBytes32(toAddress),
+      amountLD: amount,
+      minAmountLD: amount,
+      extraOptions: options,
+      composeMsg: ethers.utils.arrayify('0x'), // Assuming no composed message
+      oftCmd: ethers.utils.arrayify('0x'), // Assuming no OFT command is needed
+    };
+    // Get the quote for the send operation
+    const feeQuote = await oft.quoteSend(sendParam, false);
+    const nativeFee = feeQuote.nativeFee;
+
+    console.log(
+      `sending ${taskArgs.amount} token(s) to network ${getNetworkNameForEid(eidB)} (${eidB})`,
+    );
+
+    const ERC20Factory = await ethers.getContractFactory('ERC20');
+    const innerTokenAddress = await oft.token();
+
+    // // If the token address !== address(this), then this is an OFT Adapter
+    // if (innerTokenAddress !== oft.address) {
+    //     // If the contract is OFT Adapter, get decimals from the inner token
+    //     const innerToken = ERC20Factory.attach(innerTokenAddress);
+
+    //     // Approve the amount to be spent by the oft contract
+    //     await innerToken.approve(oftDeployment.address, amount);
+    // }
+
+    const r = await oft.send(sendParam, {nativeFee: nativeFee, lzTokenFee: 0}, signer.address, {
+      value: nativeFee,
+    });
+    console.log(`Send tx initiated. See: https://layerzeroscan.com/tx/${r.hash}`);
+  });
+
+Below you can find the send method itself.
+
+// @dev executes a cross-chain OFT swap via layerZero Endpoint
+ function send(
+    SendParam calldata _sendParam,
+    MessagingFee calldata _fee,
+    address _refundAddress
+) external payable virtual returns (MessagingReceipt memory msgReceipt, OFTReceipt memory oftReceipt) {
+    // @dev Applies the token transfers regarding this send() operation.
+    // - amountSentLD is the amount in local decimals that was ACTUALLY sent/debited from the sender.
+    // - amountReceivedLD is the amount in local decimals that will be received/credited to the recipient on the remote OFT instance.
+    (uint256 amountSentLD, uint256 amountReceivedLD) = _debit(
+        msg.sender,
+        _sendParam.amountLD,
+        _sendParam.minAmountLD,
+        _sendParam.dstEid
+    );
+
+    // @dev Builds the options and OFT message to quote in the endpoint.
+    (bytes memory message, bytes memory options) = _buildMsgAndOptions(_sendParam, amountReceivedLD);
+
+    // @dev Sends the message to the LayerZero endpoint and returns the LayerZero msg receipt.
+    msgReceipt = _lzSend(_sendParam.dstEid, message, options, _fee, _refundAddress);
+    // @dev Formulate the OFT receipt.
+    oftReceipt = OFTReceipt(amountSentLD, amountReceivedLD);
+
+    emit OFTSent(msgReceipt.guid, _sendParam.dstEid, msg.sender, amountSentLD, amountReceivedLD);
+}
+
+
+To do this, we only need to pass send a few inputs:
+
+SendParam: what parameters should be used for the send call?
+
+ struct SendParam {
+     uint32 dstEid; // Destination endpoint ID.
+     bytes32 to; // Recipient address.
+     uint256 amountLD; // Amount to send in local decimals.
+     uint256 minAmountLD; // Minimum amount to send in local decimals.
+     bytes extraOptions; // Additional options supplied by the caller to be used in the LayerZero message.
+     bytes composeMsg; // The composed message for the send() operation.
+     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
+ }
+
+info
+extraOptions allow a caller to define an additional amount of gas_limit and msg.value to deliver to the destination chain along with the required amount set by the contract owner (enforcedOptions).
+
+
+_fee: what token will be used to pay for the transaction?
+    // @dev Remote chains will want to know the composed function caller.
+    // ALSO, the presence of a composeFrom msg.sender inside of the bytes array indicates the payload should
+    // be composed. ie. this allows users to compose with an empty payload, vs it must be length > 0
+    _composeMsg = abi.encodePacked(OFTMsgCodec.addressToBytes32(msg.sender), _composeMsg);
+}
+
+msgReceipt = _sendInternal(
+    _send,
+    combineOptions(_send.dstEid, SEND_AND_CALL, _extraOptions),
+    _msgFee, // message fee
+    _refundAddress, // refund address for failed source tx
+    _composeMsg // composed message
+);
+
+On the destination chain, the _lzReceive function will first process the token transfer, crediting the recipient's account with the specified amount, and then check if _message.isComposed().
+
+if (_message.isComposed()) {
+    bytes memory composeMsg = OFTComposeMsgCodec.encode(
+        _origin.nonce, // nonce of the origin transaction
+        _origin.srcEid, // source endpoint id of the transaction
+        amountLDReceive, // the token amount in local decimals to credit
+        _message.composeMsg() // the composed message
+    );
+    // @dev Stores the lzCompose payload that will be executed in a separate tx.
+    // standardizes functionality for delivering/executing arbitrary contract invocation on some non evm chains.
+    // @dev Composed toAddress is the same as the receiver of the oft/tokens
+    endpoint.deliverComposedMessage(toAddress, _guid, composeMsg);
+}
+
+If the message is composed, the contract retrieves and re-encodes the additional composed message information, then delivers the message to the endpoint, which will execute the additional logic as a separate transaction.
+
+Optional: _oftCmd
+The _oftCmd is a bytes array that can be used like a function selector on the destination chain that you can check for within _lzReceive similar to lzCompose for custom OFT implementations.
+
+_lzReceive tokens
+A successful send call will be delivered to the destination chain, invoking the provided _lzReceive method during execution:
+
+function _lzReceive(
+    Origin calldata _origin,
+    bytes32 _guid,
+    bytes calldata _message,
+    address /*_executor*/,
+    bytes calldata /*_extraData*/
+) internal virtual override {
+    // @dev sendTo is always a bytes32 as the remote chain initiating the call doesnt know remote chain address size
+    address toAddress = _message.sendTo().bytes32ToAddress();
+
+    uint256 amountToCreditLD = _toLD(_message.amountSD());
+    uint256 amountReceivedLD = _credit(toAddress, amountToCreditLD, _origin.srcEid);
+
+    if (_message.isComposed()) {
+        bytes memory composeMsg = OFTComposeMsgCodec.encode(
+            _origin.nonce,
+            _origin.srcEid,
+            amountReceivedLD,
+            _message.composeMsg()
+        );
+        // @dev Stores the lzCompose payload that will be executed in a separate tx.
+        // standardizes functionality for executing arbitrary contract invocation on some non-evm chains.
+        // @dev Composed toAddress is the same as the receiver of the oft/tokens
+        // TODO need to document the index / understand how to use it properly
+        endpoint.sendCompose(toAddress, _guid, 0, composeMsg);
+    }
+
+    emit OFTReceived(_guid, toAddress, amountToCreditLD, amountReceivedLD);
+}
+
+_credit:
+When receiving the message on your destination contract, _credit is invoked, triggering the final steps to mint an ERC20 token on the destination to the specified address.
+
+function _credit(
+    address _to,
+    uint256 _amountToCreditLD,
+    uint32 /*_srcEid*/
+) internal virtual override returns (uint256 amountReceivedLD) {
+    _mint(_to, _amountToCreditLD);
+    return _amountToCreditLD;
+}
